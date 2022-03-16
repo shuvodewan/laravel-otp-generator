@@ -1,0 +1,19 @@
+{
+    "name": "eagleeye/otp",
+    "description": "Laravel OTP Generator",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Shuvo dewan",
+            "email": "shuvodewan.sky@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Eagleeye\\Otp\\": "src/"
+        }
+    }
+}
