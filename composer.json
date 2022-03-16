@@ -15,5 +15,12 @@
         "psr-4": {
             "Eagleeye\\Otp\\": "src/"
         }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Eagleeye\\Otp\\OtpServiceProvider"
+            ]
+        }
     }
 }
