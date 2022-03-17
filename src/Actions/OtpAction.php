@@ -2,13 +2,8 @@
 
 namespace Eagleeye\Otp\Actions;
 
-use App\Actions\OtpStorage;
 use DateTime;
 use Eagleeye\Otp\StorageInterface;
-use Exception;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Mail;
 
 class OtpAction{
 
@@ -68,7 +63,7 @@ class OtpAction{
     public function __construct(StorageInterface $storage)
     {
         $this->storage=$storage;
-        $this->mood=env('APP_ENV');
+        $this->mood=config('otp.mood');
 
         return $this;
     }
@@ -320,25 +315,27 @@ class OtpAction{
 
         $this->setKey($key);
 
-       
+        $otp=$this->GenerateOtp();
+
         if($smscallback!=null && is_callable($smscallback)){
-            call_user_func($smscallback,$this->GenerateOtp());
+            call_user_func($smscallback,$otp);
         }
 
         return $this->getValue();
     }
 
 
-    public function getlazy(String $key, $smscallback=null){
+    public function interval(String $key, $smscallback=null){
 
         $this->setKey($key);
 
         if($this->getTime()){
             return ['expired'=>false,'remaining'=>$this->get_remaining_time()];
         }
+        $otp=$this->GenerateOtp();
 
         if($smscallback!=null && is_callable($smscallback)){
-            call_user_func($smscallback,$this->GenerateOtp());
+            call_user_func($smscallback,$otp);
         }
 
         return ['expired'=>true,'otp'=>$this->getValue()];
@@ -354,7 +351,7 @@ class OtpAction{
      * @return [type]
      * 
      */
-    public function sendotp(String $key,Callable $smscallback){
+    public function action(String $key,Callable $smscallback){
 
         return $this->get($key,$smscallback);
     }
@@ -368,9 +365,9 @@ class OtpAction{
      * @return [type]
      * 
      */
-    public function sendlazy(String $key,Callable $smscallback){
+    public function intervalaction(String $key,Callable $smscallback){
 
-        return $this->getlazy($key,$smscallback);
+        return $this->interval($key,$smscallback);
     }
 
     /**

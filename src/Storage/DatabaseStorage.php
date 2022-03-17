@@ -17,7 +17,7 @@ class DatabaseStorage implements StorageInterface
      * 
      */
     public function get($key){
-        $data=DB::table('otps')->where('key',$key)->latest()->first();
+        $data=DB::table(config('otp.table_name','otps'))->where('key',$key)->latest()->first();
         if($data){
             $this->isExpired($data->value,$key)?$data=null:'';
         }
@@ -52,7 +52,7 @@ class DatabaseStorage implements StorageInterface
             'value'=>$value,
             'expire'=>$expire,
         ];
-        DB::table('otps')->insert($data);
+        DB::table(config('otp.table_name','otps'))->insert($data);
     }
     /**
      * [Description for destroy]
@@ -63,6 +63,6 @@ class DatabaseStorage implements StorageInterface
      * 
      */
     public function destroy($key){
-        $data=DB::table('otps')->where('key',$key)->delete();
+        $data=DB::table(config('otp.table_name','otps'))->where('key',$key)->delete();
     }
 }

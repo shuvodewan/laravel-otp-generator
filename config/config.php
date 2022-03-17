@@ -15,7 +15,7 @@ return
      * @return [type]
      * 
      */
-    'type'=>'alphabetic',
+    'type'=>'numeric',
 
     /**
      * [Description for boot]
@@ -23,7 +23,7 @@ return
      * @return [type]
      * 
      */
-    'length'=>'10',
+    'length'=>'6',
 
     /**
      * [Description for boot]
@@ -47,7 +47,7 @@ return
      * @return [type]
      * 
      */
-    'expire'=>"10",
+    'expire'=>"60",
 
     /**
      * [Description for boot]
@@ -64,5 +64,5 @@ return
      * @return [type]
      * 
      */
-    'table_name'=>'tests'
+    'table_name'=>'otp_table'
 ];
