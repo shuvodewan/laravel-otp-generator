@@ -311,21 +311,21 @@ class OtpAction{
      * @return [type]
      * 
      */
-    public function get(String $key,$smscallback=null){
+    public function get(String $key,$callback=null){
 
         $this->setKey($key);
 
         $otp=$this->GenerateOtp();
 
-        if($smscallback!=null && is_callable($smscallback)){
-            call_user_func($smscallback,$otp);
+        if($callback!=null && is_callable($callback)){
+            call_user_func($callback,$otp);
         }
 
         return $this->getValue();
     }
 
 
-    public function interval(String $key, $smscallback=null){
+    public function interval(String $key, $callback=null){
 
         $this->setKey($key);
 
@@ -334,8 +334,8 @@ class OtpAction{
         }
         $otp=$this->GenerateOtp();
 
-        if($smscallback!=null && is_callable($smscallback)){
-            call_user_func($smscallback,$otp);
+        if($callback!=null && is_callable($callback)){
+            call_user_func($callback,$otp);
         }
 
         return ['expired'=>true,'otp'=>$this->getValue()];
@@ -351,9 +351,9 @@ class OtpAction{
      * @return [type]
      * 
      */
-    public function action(String $key,Callable $smscallback){
+    public function action(String $key,Callable $callback){
 
-        return $this->get($key,$smscallback);
+        return $this->get($key,$callback);
     }
 
 
@@ -365,9 +365,9 @@ class OtpAction{
      * @return [type]
      * 
      */
-    public function intervalaction(String $key,Callable $smscallback){
+    public function intervalaction(String $key,Callable $callback){
 
-        return $this->interval($key,$smscallback);
+        return $this->interval($key,$callback);
     }
 
     /**

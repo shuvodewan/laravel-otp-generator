@@ -27,7 +27,7 @@ class OtpServiceProvider extends ServiceProvider
             $timestamp = date('Y_m_d_His', time());
 
             $this->publishes([
-                __DIR__.'/../migrations/create_otps_table.txt' => database_path("/migrations/{$timestamp}_create_otp_table.php"),
+                __DIR__.'/../migrations/create_otps_table.txt' => database_path("/migrations/{$timestamp}_create_otps_table.php"),
             ], 'migrations');
         
           }
