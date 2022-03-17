@@ -8,7 +8,7 @@ A laravel package to generate OTP.
 - [Vendor Publication](#vendorpublish)
     - [Config](#vendor_config)
     - [Migrations](#vendor_database)
-- [Configaration](#config)
+- [Configuration](#config)
     - [Prefix](#config_prefix)
     - [Type](#config_type)
     - [Length](#config_length)
@@ -16,7 +16,7 @@ A laravel package to generate OTP.
     - [Expire](#config_expire)
     - [Case](#config_case)
     - [Table Name](#config_table)
-- [Uses](#uses)
+- [Usage](#usage)
     - [Get Method](#uses_get)
     - [Interval Method](#uses_interval)
     - [Action Method](#uses_action)
@@ -24,11 +24,9 @@ A laravel package to generate OTP.
     
     
 
-<br/><br/>
+<br/>
 
 ## 🚀 <span id="installation">Installation </span>
-
----
 
 ``Composer`` will allows you to quickly  install via the command line.
 
@@ -42,7 +40,7 @@ A laravel package to generate OTP.
 ---
 
 >**NOTE**</br>
->Publishing vendors are optional only required if you are willing to change configaration and use database as ***OTP*** storage.
+>Publishing vendors are optional only required if you are willing to change configuration and use database as ***OTP*** storage.
 
 <br/>
 
@@ -61,12 +59,10 @@ php artisan vendor:publish --provider="Eagleeye\Otp\OtpServiceProvider" --tag=mi
 ```
 <br/>
 
-## ✨<span id="config"> Configaration File </span>
-
----
+## ✨<span id="config"> Configuration File </span>
 
 >**NOTE**</br>
->You will find the ***OTP*** configaration file in `config` folder name as `otp.php`  .
+>You will find the ***OTP*** configuration file in `config` folder name as `otp.php`  .
 
 <br/>
 
@@ -152,15 +148,14 @@ return
 
 ```
 
-- ###  <span id="config_prefix">prefix</span> 
+- ###  <span id="config_prefix">Prefix</span> 
     - The `prefix` default value is `null`. If you would like to add a text or trademark or a single character like `google`  registration `OTP` in every generated otp, Just add the prefix value.<br\>
     `Prefix` and Actual `OTP` will be seperated by a ( `-` )
 
       |Prefix|Without Prefix|With Prefix|
       |------|--------------|-----------|
       |P     |12345678      |P-12345678 |
-
-<br/>      
+    
 
 - ### <span id="config_type">type</span> 
     - The `type` represent `OTP` string type .default value is `numeric`.<br\>
@@ -175,9 +170,8 @@ return
       |mixalphabetic  |!tad%hgr  | Alphabet,Special Character      |  
       |mixalphanumeric|!t4<7g!   |Number,Alphabet,Special Character|          
 
-<br/>  
 
-- ### <span id="config_length">length</span> 
+- ### <span id="config_length">Length</span> 
     - The `length` represent total number of character's in generated `OTP` .Default length is ***6***. 
 
       |Length|      OTP     |
@@ -185,23 +179,20 @@ return
       |   6  |    123456    |
       |   8  |   12345678   |
 
-<br/> 
 
-- ### <span id="config_storage">storage </span>
+- ### <span id="config_storage">Storage </span>
     - `Cache Storage` used as default storage to store ***OTP*** .Dont forget to publish ***Otp migration*** file before using `database` as OTP storage.
         #### storage Options:
         - `cache`
         - `session` 
         - `database`
 
-<br/>
 
-- ### <span id="config_expire">expire</span> 
+- ### <span id="config_expire">Expire</span> 
     - `expire` - The validity period of the OTP in seconds
 
-<br/> 
 
-- ### <span id="config_case">case </span>
+- ### <span id="config_case">Case </span>
     - The `case` - differentiating between capital and lower-case letters. 
 
       |   Case   |      OTP      |
@@ -209,18 +200,16 @@ return
       |   lower  |   generator   |
       |   upper  |   GENERATOR   |
 
-<br/> 
 
-- ### <span id="config_table">table_name </table>
+- ### <span id="config_table">Table Name </table>
     - `table_name` - With the name OTP databse migration table will be created .``otp_table`` is default table name.
 
 <br/> 
 
 <br/>
 
-## 🚀<span id="uses">Usage </span>
+## 🚀<span id="usage">Usage </span>
 
----
 <br/>
 
 Import OTP facade
@@ -245,7 +234,7 @@ This will generate a OTP that valid till expire time(`configured in config file`
 
 * `$key`: The key that will be tied to the OTP.
 
-#### Sample
+#### Example
 
 ```php
 <?php
@@ -276,7 +265,7 @@ This will generate a OTP that valid till expire time(`configured in config file`
 
 * `$key`: The key that will be tied to the OTP.
 
-#### Sample if otp hasnt expired
+#### Example if otp hasnt expired
 
 ```php
 <?php
@@ -294,7 +283,7 @@ array:2 [▼
 ]
 ```
 
-#### Sample if otp expired
+#### Example if otp expired
 
 ```php
 <?php
@@ -308,7 +297,7 @@ echo $otp;
 
 array:2 [▼
   "expired" => true
-  "otp" => "282561"
+  "otp" => "282561" //New otp
 ]
 ```
 <br/>
@@ -329,7 +318,7 @@ This will generate a OTP that valid till expire time(`configured in config file`
 * `$key`: The key that will be tied to the OTP.
 * `$callback`: Take a callable function . Specially usefull to implement sms gateway's ,Email,etc...
 
-#### Sample
+#### Example
 
 ```php
 <?php
@@ -364,7 +353,7 @@ Same as Interval the function will generate new otp until previous one expired:
 * `$key`: The key that will be tied to the OTP.
 * `$callback`: Take a callable function . Specially usefull to implement sms gateway's ,Email,etc...
 
-#### Sample if otp hasnt expired
+#### Example if otp hasnt expired
 
 ```php
 <?php
@@ -383,7 +372,7 @@ array:2 [▼
   "remaining" => "00 00:01:49" //Remaining time of expiration
 ]
 ```
-#### Sample if otp expired
+#### Example if otp expired
 
 ```php
 <?php
@@ -399,7 +388,7 @@ echo $otp;
 
 array:2 [▼
   "expired" => true
-  "otp" => "282561"
+  "otp" => "282561" //New otp
 ]
 ```
 
