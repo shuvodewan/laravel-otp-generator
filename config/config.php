@@ -48,12 +48,21 @@ return
      * 
      */
     'expire'=>"10",
-    
+
     /**
      * [Description for boot]
      *
      * @return [type]
      * 
      */
-    'case'=>'lower'
+    'case'=>'lower',
+
+
+    /**
+     * [Description for boot]
+     *
+     * @return [type]
+     * 
+     */
+    'table_name'=>'tests'
 ];

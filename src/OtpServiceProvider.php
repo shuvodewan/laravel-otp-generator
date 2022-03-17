@@ -18,12 +18,17 @@ class OtpServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-
         if ($this->app->runningInConsole()) {
 
             $this->publishes([
-              __DIR__.'/config/config.php' => config_path('otp.php'),
+              __DIR__.'/../config/config.php' => config_path('otp.php'),
             ], 'config');
+
+            $timestamp = date('Y_m_d_His', time());
+
+            $this->publishes([
+                __DIR__.'/../migrations/create_otps_table.txt' => database_path("/migrations/{$timestamp}_create_otp_table.php"),
+            ], 'migrations');
         
           }
         
@@ -57,7 +62,7 @@ class OtpServiceProvider extends ServiceProvider
         });
 
         ///Register
-        $this->mergeConfigFrom(__DIR__.'/config/config.php', 'otp');
+        $this->mergeConfigFrom(__DIR__.'/../config/config.php', 'otp');
 
     }
 }
