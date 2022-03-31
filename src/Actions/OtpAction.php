@@ -23,8 +23,54 @@ class OtpAction{
     protected $mood;
 
 
+    /**
+     * [Description for $storage]
+     *
+     * @var [type]
+     */
     protected $storage;
 
+
+    /**
+     * [Description for $timezone]
+     *
+     * @var [type]
+     */
+    protected $timezone;
+
+    /**
+     * [Description for $length]
+     *
+     * @var [type]
+     */
+    protected $length;
+
+    /**
+     * [Description for $case]
+     *
+     * @var [type]
+     */
+    protected $case;
+    /**
+     * [Description for $type]
+     *
+     * @var [type]
+     */
+    protected $type;
+
+    /**
+     * [Description for $prefix]
+     *
+     * @var [type]
+     */
+    protected $prefix;
+
+    /**
+     * [Description for $expire]
+     *
+     * @var [type]
+     */
+    protected $expire;
 
     /**
      * [Description for $max]
@@ -63,7 +109,20 @@ class OtpAction{
     public function __construct(StorageInterface $storage)
     {
         $this->storage=$storage;
+
         $this->mood=config('otp.mood');
+
+        $this->timezone=config('app.timezone');
+
+        $this->length=config('otp.length');
+
+        $this->case=config('otp.case');
+
+        $this->type=config('otp.type');
+
+        $this->prefix=config('otp.prefix');
+
+        $this->expire=config('otp.expire');
 
         return $this;
     }
@@ -76,7 +135,7 @@ class OtpAction{
      */
     private function getLength(){
 
-        return config('otp.length')>$this->max?$this->max:config('otp.length');
+        return $this->length>$this->max?$this->max:$this->length;
     }
 
     /**
@@ -145,8 +204,14 @@ class OtpAction{
         return substr(str_shuffle($this->specialCarecters.substr($this->getAlphaNumeric(),0,10)).$this->getAlphaNumeric(),0);
     } 
 
+    /**
+     * [Description for getRandom]
+     *
+     * @return [type]
+     * 
+     */
     private function getRandom(){
-        switch(config('otp.type'))
+        switch($this->type)
         {
             case 'numeric':
                 return $this->getRandomDigits();
@@ -185,7 +250,7 @@ class OtpAction{
      */
     private function caseChecker($value){
 
-        switch(config('otp.case')){
+        switch($this->case){
             case 'upper':
                 return strtoupper($value);
                 break;
@@ -198,7 +263,7 @@ class OtpAction{
 
     private function getPrefix($value){
 
-        return config('otp.prefix')?(string)config('otp.prefix').'-'.$value:$value;
+        return $this->prefix?(string)$this->prefix.'-'.$value:$value;
 
     }
 
@@ -266,9 +331,19 @@ class OtpAction{
      * 
      */
     private function generateExpireTime(){
-        date_default_timezone_set(config('app.timezone'));
+        date_default_timezone_set($this->timezone);
         $now = date("Y-m-d H:i:s");
-        return date("Y-m-d H:i:s", strtotime('+'.config('otp.expire').' seconds', strtotime($now)));
+        return date("Y-m-d H:i:s", strtotime('+'.$this->expire.' seconds', strtotime($now)));
+    }
+
+    /**
+     * [Description for getGeneratedValue]
+     *
+     * @return [type]
+     * 
+     */
+    private function getGeneratedValue(){
+        return $this->getPrefix($this->caseChecker(substr($this->getRandom(),0,$this->length)));
     }
         
     /**
@@ -280,7 +355,7 @@ class OtpAction{
 
         $this->getValue()?$this->deleteValue():'';
 
-        $otp=$this->getPrefix($this->caseChecker(substr($this->getRandom(),0,config('otp.length')))).'@'.$this->generateExpireTime();
+        $otp=$this->getGeneratedValue().'@'.$this->generateExpireTime();
 
         $this->storage->store($this->key,$otp, $this->generateExpireTime());
 
@@ -301,6 +376,27 @@ class OtpAction{
         return $diff->format('%D %H:%i:%s');
     }
 
+    private function setConfig($options){
+        $configs=['length','case','prefix','type'];
+        foreach($options as $key=>$option){
+            if(in_array($key,$configs)){
+                $this->$key=$option;
+            }
+        }
+    }
+
+    /**
+     * [Description for readonly]
+     *
+     * @return [type]
+     * 
+     */
+    public function readonly($options=null){
+        if(is_array($options) && count($options)>0){
+            $this->setConfig($options);
+        }
+        return $this->getGeneratedValue();
+    }
 
     /**
      * [Description for get_otp]
@@ -325,6 +421,15 @@ class OtpAction{
     }
 
 
+    /**
+     * [Description for interval]
+     *
+     * @param String $key
+     * @param mixed $callback=null
+     * 
+     * @return [type]
+     * 
+     */
     public function interval(String $key, $callback=null){
 
         $this->setKey($key);

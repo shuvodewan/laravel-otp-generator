@@ -391,6 +391,38 @@ array:2 [▼
   "otp" => "282561" //New otp
 ]
 ```
+<br/>
+
+### Static Function : <span id="uses_readonly">Readonly</span>
+```php
+//Facade accessor public function
+public function readonly($options=nullable)
+{
+     //processing...
+}
+```
+
+This will return  a random  generated string for other uses.
+
+<br/>
+
+* `$options`: It takes a array as parameter to replace [Configuration](#config) file parameters.
+
+#### Example
+
+```php
+<?php
+
+$result=OTP::readonly(['prefix'=>'sn','length'=>15,'case'=>'upper','type'=>'alphabetic']);
+echo $result;
+
+// 20220331221403
+// http://otp.test/
+
+"sn-ISUQXTFPQYJIMSR"
+```
+
+<br/>
 
 <br/><br/>
 ## Author

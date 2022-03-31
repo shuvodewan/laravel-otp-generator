@@ -15,7 +15,7 @@ return
 
 
     /**
-     * [Description for boot]
+     * [Description for type]
      *
      * Example: numeric         | Output  12345678
      * Example: alphabetic      | Output  ktylnfdgf
@@ -68,7 +68,7 @@ return
 
 
 
-    'storage'=>'database',
+    'storage'=>'cache',
 
 
 
