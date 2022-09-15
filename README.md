@@ -54,7 +54,7 @@ php artisan vendor:publish --provider="Eagleeye\Otp\OtpServiceProvider" --tag=co
 <span id="vendor_database"> Publish database migration file</span>
 
 ```bash
-php artisan vendor:publish --provider="Eagleeye\Otp\OtpServiceProvider" --tag=migration
+php artisan vendor:publish --provider="Eagleeye\Otp\OtpServiceProvider" --tag=migrations
 
 ```
 <br/>
