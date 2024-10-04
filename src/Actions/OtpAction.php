@@ -7,7 +7,7 @@ use Eagleeye\Otp\StorageInterface;
 
 class OtpAction{
 
-        
+
     /**
      * key
      *
@@ -99,7 +99,7 @@ class OtpAction{
      */
     protected $specialCarecters="!#$%^&*()";
 
-        
+
     /**
      * __construct
      *
@@ -131,7 +131,7 @@ class OtpAction{
      * [Description for getLength]
      *
      * @return [type]
-     * 
+     *
      */
     private function getLength(){
 
@@ -142,73 +142,73 @@ class OtpAction{
      * [Description for getRandomDigits]
      *
      * @return [type]
-     * 
+     *
      */
     /**
      * [Description for getRandomDigits]
      *
      * @return [type]
-     * 
+     *
      */
     private function getRandomDigits(){
-        return substr(number_format(time() * rand(),0,'',''),0); 
+        return substr(number_format(time() * rand(),0,'',''),0);
     }
 
     /**
      * [Description for getRandomString]
      *
      * @return [type]
-     * 
+     *
      */
     private function getRandomString(){
-        return substr(str_shuffle($this->charecters), 0); 
+        return substr(str_shuffle($this->charecters), 0);
     }
 
     /**
      * [Description for getAlphaNumeric]
      *
      * @return [type]
-     * 
+     *
      */
     private function getAlphaNumeric(){
-        return substr(md5(microtime(true).mt_Rand()),0); 
+        return substr(md5(microtime(true).mt_Rand()),0);
     }
 
     /**
      * [Description for getStrongDigit]
      *
      * @return [type]
-     * 
+     *
      */
     private function getStrongDigit(){
         return substr(str_shuffle($this->specialCarecters.substr($this->getRandomDigits(),0,8)).$this->getRandomDigits(),0);
-    } 
+    }
 
     /**
      * [Description for getStrongString]
      *
      * @return [type]
-     * 
+     *
      */
     private function getStrongString(){
         return substr(str_shuffle($this->specialCarecters.substr($this->getRandomString(),0,10)).$this->getRandomString(),0);
-    } 
+    }
     /**
      * [Description for getStrongAlphaNumeric]
      *
      * @return [type]
-     * 
+     *
      */
     private function getStrongAlphaNumeric(){
-        
+
         return substr(str_shuffle($this->specialCarecters.substr($this->getAlphaNumeric(),0,10)).$this->getAlphaNumeric(),0);
-    } 
+    }
 
     /**
      * [Description for getRandom]
      *
      * @return [type]
-     * 
+     *
      */
     private function getRandom(){
         switch($this->type)
@@ -217,25 +217,25 @@ class OtpAction{
                 return $this->getRandomDigits();
                 break;
 
-            case 'alphabetic':     
+            case 'alphabetic':
                 return $this->getRandomString();
                 break;
 
-            case 'alphanumeric':     
+            case 'alphanumeric':
                 return $this->getAlphaNumeric();
                 break;
 
-            case 'mixnumeric':     
+            case 'mixnumeric':
                 return $this->getStrongDigit();
-                break;    
+                break;
 
-            case 'mixalphabetic':     
+            case 'mixalphabetic':
                 return $this->getStrongString();
-                break; 
+                break;
 
-            case 'mixalphanumeric':     
+            case 'mixalphanumeric':
                 return $this->getStrongAlphaNumeric();
-                break;         
+                break;
         }
     }
 
@@ -244,9 +244,9 @@ class OtpAction{
      * [Description for caseChecker]
      *
      * @param mixed $value
-     * 
+     *
      * @return [type]
-     * 
+     *
      */
     private function caseChecker($value){
 
@@ -255,9 +255,9 @@ class OtpAction{
                 return strtoupper($value);
                 break;
 
-            case 'lower':  
+            case 'lower':
                 return strtolower($value);
-                break;  
+                break;
         }
     }
 
@@ -271,9 +271,9 @@ class OtpAction{
      * [Description for setKey]
      *
      * @param mixed $key
-     * 
+     *
      * @return [type]
-     * 
+     *
      */
     private function setKey($key){
         $this->key=$key;
@@ -285,7 +285,7 @@ class OtpAction{
      * @return void
      */
     private function extract($value){
-        
+
         return $value?explode('@',$value):null;
     }
 
@@ -299,12 +299,12 @@ class OtpAction{
         return $value?$value[0]:null;
     }
 
-   
+
     /**
      * [Description for getTime]
      *
      * @return [type]
-     * 
+     *
      */
     private function getTime(){
         // dd($this->key,Cache::get($this->key));
@@ -313,7 +313,7 @@ class OtpAction{
     }
 
 
-    
+
     /**
      * deleteValue
      *
@@ -328,7 +328,7 @@ class OtpAction{
      * [Description for generateExpireTime]
      *
      * @return [type]
-     * 
+     *
      */
     private function generateExpireTime(){
         date_default_timezone_set($this->timezone);
@@ -340,12 +340,12 @@ class OtpAction{
      * [Description for getGeneratedValue]
      *
      * @return [type]
-     * 
+     *
      */
     private function getGeneratedValue(){
         return $this->getPrefix($this->caseChecker(substr($this->getRandom(),0,$this->length)));
     }
-        
+
     /**
      * GenerateOtp
      *
@@ -367,7 +367,7 @@ class OtpAction{
      * [Description for get_remaining_time]
      *
      * @return [type]
-     * 
+     *
      */
     private function get_remaining_time(){
         $expiry_time = new DateTime($this->getTime());
@@ -389,7 +389,7 @@ class OtpAction{
      * [Description for readonly]
      *
      * @return [type]
-     * 
+     *
      */
     public function readonly($options=null){
         if(is_array($options) && count($options)>0){
@@ -403,9 +403,9 @@ class OtpAction{
      *
      * @param mixed $key
      * @param Callable $smscallback=null
-     * 
+     *
      * @return [type]
-     * 
+     *
      */
     public function get(String $key,$callback=null){
 
@@ -426,9 +426,9 @@ class OtpAction{
      *
      * @param String $key
      * @param mixed $callback=null
-     * 
+     *
      * @return [type]
-     * 
+     *
      */
     public function interval(String $key, $callback=null){
 
@@ -443,7 +443,7 @@ class OtpAction{
             call_user_func($callback,$otp);
         }
 
-        return ['expired'=>true,'otp'=>$this->getValue()];
+        return ['expired'=>true,'otp'=>$this->getValue(),'remaining'=>$this->get_remaining_time()];
     }
 
 
@@ -452,9 +452,9 @@ class OtpAction{
      *
      * @param mixed $key
      * @param mixed $phone
-     * 
+     *
      * @return [type]
-     * 
+     *
      */
     public function action(String $key,Callable $callback){
 
@@ -466,9 +466,9 @@ class OtpAction{
      * [Description for send_lazy_otp_sms]
      *
      * @param mixed $phone
-     * 
+     *
      * @return [type]
-     * 
+     *
      */
     public function intervalaction(String $key,Callable $callback){
 
@@ -479,19 +479,19 @@ class OtpAction{
      * [Description for verify]
      *
      * @return [type]
-     * 
+     *
      */
     public function verify(String $key,$otp){
 
         $this->setKey($key);
 
         $value=$this->getValue();
-        
+
         if($value){
             return $otp===$value;
         }
         return false;
     }
 
-   
+
 }
