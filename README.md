@@ -278,7 +278,7 @@ echo $otp;
 // https://example/url
 
 array:2 [▼
-  "expired" => false
+  "expired" => false,
   "remaining" => "00 00:01:49" //Remaining time of expiration
 ]
 ```
@@ -296,8 +296,9 @@ echo $otp;
 // https://example/url
 
 array:2 [▼
-  "expired" => true
-  "otp" => "282561" //New otp
+  "expired" => true,
+  "otp" => "282561", //New otp
+  "remaining" => "00 00:01:49" //Remaining time of expiration
 ]
 ```
 <br/>
