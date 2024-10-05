@@ -101,6 +101,35 @@ class OtpAction{
 
 
     /**
+     * resendIn
+     *
+     * @var string
+     */
+    protected $resendIn="60";
+
+
+    /**
+     * history
+     *
+     * @var bool
+     */
+    protected $history=false;
+
+    /**
+     * duplicate
+     *
+     * @var bool
+     */
+    protected $duplicate=false;
+
+    /**
+     * duplicateTill
+     *
+     * @var string
+     */
+    protected $duplicateTill="60";
+
+    /**
      * __construct
      *
      * @param  mixed $key
@@ -123,6 +152,14 @@ class OtpAction{
         $this->prefix=config('otp.prefix');
 
         $this->expire=config('otp.expire');
+
+        $this->history=config('otp.history');
+
+        $this->resendIn=config('otp.resend_in');
+
+        $this->duplicate=config('otp.duplicate');
+
+        $this->duplicateTill=config('otp.duplicate_till');
 
         return $this;
     }
@@ -294,9 +331,25 @@ class OtpAction{
      *
      * @return void
      */
-    private function getValue(){
-        $value=$this->extract($this->storage->get($this->key));
+    private function getValue($value=null){
+
+        $value=$this->extract($value??$this->storage->get($this->key));
         return $value?$value[0]:null;
+    }
+
+    /**
+     * getValue
+     *
+     * @return void
+     */
+    private function isDuplicateable($value){
+
+        if($this->duplicate){
+            $value=$this->extract($value);
+            $resend_time = new DateTime($value[2]);
+            $current_date = new DateTime();
+            return $resend_time<$current_date;
+        }
     }
 
 
@@ -309,7 +362,25 @@ class OtpAction{
     private function getTime(){
         // dd($this->key,Cache::get($this->key));
         $value=$this->extract($this->storage->get($this->key));
-        return $value?$value[1]:null;
+        if($value){
+            $resend_time = new DateTime($value[2]);
+            $current_date = new DateTime();
+            if($resend_time>$current_date){
+                return $value[2];
+            }
+        }
+    }
+
+    /**
+     * isExpired
+     *
+     * @return void
+     */
+    private function isExpired($value){
+        $value = $this->extract($value);
+        $expire_time = new DateTime($value[1]);
+        $current_date = new DateTime();
+        return $expire_time<$current_date;
     }
 
 
@@ -337,6 +408,17 @@ class OtpAction{
     }
 
     /**
+     * generateExpireTime
+     *
+     * @return void
+     */
+    private function generateResendTime(){
+        date_default_timezone_set($this->timezone);
+        $now = date("Y-m-d H:i:s");
+        return date("Y-m-d H:i:s", strtotime('+'.$this->resendIn.' seconds', strtotime($now)));
+    }
+
+    /**
      * [Description for getGeneratedValue]
      *
      * @return [type]
@@ -353,13 +435,36 @@ class OtpAction{
      */
     private function GenerateOtp(){
 
-        $this->getValue()?$this->deleteValue():'';
+        $value = $this->storage->get($this->key);
 
-        $otp=$this->getGeneratedValue().'@'.$this->generateExpireTime();
+        if($value){
+            $duplicateable = $this->isDuplicateable($value);
+            $expired=$this->isExpired($value);
 
-        $this->storage->store($this->key,$otp, $this->generateExpireTime());
+            if(!$this->history){
+                $this->deleteValue();
+            }
 
-        return $this->getValue();
+            if($expired || !$duplicateable){
+                $otp=$this->getGeneratedValue();
+                $expireTime = $this->generateExpireTime();
+                $resentTime = $this->generateResendTime();
+            }else{
+                $otp=$this->getValue($value);
+                $expireTime = $this->extract($value)[1];
+                $resentTime = $this->generateResendTime();
+            }
+        }else{
+            $otp=$this->getGeneratedValue();
+            $expireTime = $this->generateExpireTime();
+            $resentTime = $this->generateResendTime();
+        }
+
+        $payload=$otp.'@'.$expireTime.'@'.$resentTime; // OTP@Expired@Resend
+
+        $this->storage->store($this->key,$payload, $expireTime);
+
+        return $otp;
     }
 
 
@@ -376,6 +481,12 @@ class OtpAction{
         return $diff->format('%D %H:%i:%s');
     }
 
+    /**
+     * setConfig
+     *
+     * @param  mixed $options
+     * @return void
+     */
     private function setConfig($options){
         $configs=['length','case','prefix','type'];
         foreach($options as $key=>$option){
@@ -485,12 +596,34 @@ class OtpAction{
 
         $this->setKey($key);
 
-        $value=$this->getValue();
+        $value = $this->storage->get($this->key);
 
-        if($value){
-            return $otp===$value;
+        $result =  $value && !$this->isExpired($value) && $otp===$this->getValue($value);
+
+        if($result){
+            $value = $this->extract($value);
+            if($this->history){
+                $expired = date("Y-m-d H:i:s");
+                $this->storage->expire($key,$value[0].'@'.$expired.'@'.$value[2],$expired);
+            }else{
+                $this->storage->destroy($key);
+            }
         }
-        return false;
+
+        return $result;
+    }
+
+
+    /**
+     * deleteAllExpiredOtp
+     *
+     * @return void
+     */
+    public function deleteAllExpiredOtp(){
+
+        if(!$this->history){
+            $this->storage->deleteAllExpiredOtp();
+        }
     }
 
 
