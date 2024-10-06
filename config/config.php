@@ -1,3 +1,4 @@
+
 <?php
 
 return
@@ -5,11 +6,11 @@ return
     * [Description for prefix]
     *
     * Example: G  | Output G-12345678
-    * 
+    *
     */
 
 
-    
+
     'prefix'=>null,
 
 
@@ -34,7 +35,7 @@ return
      *
      * Example: 6    | Output 123456
      * Example: 8    | Output 12345678
-     * 
+     *
      */
 
 
@@ -48,7 +49,7 @@ return
      * [Description for Mood]
      *
      * @return [type]
-     * 
+     *
      */
 
 
@@ -76,15 +77,44 @@ return
     /**
      * [Description for expire]
      *
-     * OTP expire time 
+     * OTP expire time
      * In seconds
-     * 
+     *
      */
 
 
 
     'expire'=>"60",
 
+    /**
+     * [Description for history]
+     *
+     * If true previous expired or validated otp wont delete
+     * In boolean
+     *
+     */
+    'history'=>false,
+
+
+    /**
+     * [Description for resend_in]
+     *
+     * Resend remaining time for interval mode
+     * Should be smaller then expire time
+     * In seconds
+     *
+     */
+    'resend_in'=>"60",
+
+    /**
+     * [Description for duplicate]
+     *
+     * Send previously generated for resend till expire or validate
+     * In boolean
+     * Duplicate till expired
+     *
+     */
+    'duplicate'=>false,
 
 
 
@@ -105,7 +135,7 @@ return
      * [Description for table_name]
      *
      * Table name to create table in databse
-     * 
+     *
      */
 
 

@@ -14,7 +14,7 @@ class OtpServiceProvider extends ServiceProvider
      * [Description for boot]
      *
      * @return [type]
-     * 
+     *
      */
     public function boot()
     {
@@ -29,16 +29,20 @@ class OtpServiceProvider extends ServiceProvider
             $this->publishes([
                 __DIR__.'/../migrations/create_otps_table.txt' => database_path("/migrations/{$timestamp}_create_otps_table.php"),
             ], 'migrations');
-        
-          }
-        
+
+            $this->commands([
+                DeleteAllExpiredOtp::class
+            ]);
+
+        }
+
     }
 
     /**
      * [Description for register]
      *
      * @return [type]
-     * 
+     *
      */
     public function register()
     {
@@ -52,13 +56,13 @@ class OtpServiceProvider extends ServiceProvider
             }
             else if(config('otp.storage')=='session')
             {
-                return new SessionStorage(); 
+                return new SessionStorage();
             }
             else if(config('otp.storage')=='database')
             {
-                return new DatabaseStorage(); 
+                return new DatabaseStorage();
             }
-            
+
         });
 
         ///Register

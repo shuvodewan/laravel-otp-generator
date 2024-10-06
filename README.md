@@ -21,6 +21,7 @@ A laravel package to generate OTP.
     - [Interval Method](#uses_interval)
     - [Action Method](#uses_action)
     - [Interval Action Method](#uses_intervalaction)
+    - [Verify](#verify)
     
     
 
@@ -126,6 +127,37 @@ return
      * 
      */
     'expire'=>"60",
+
+    /**
+     * [Description for history]
+     *
+     * If true previous expired or validated otp wont delete
+     * In boolean
+     *
+     */
+    'history'=>false,
+
+
+    /**
+     * [Description for resend_in]
+     *
+     * Resend remaining time for interval mode
+     * Should be smaller then expire time
+     * In seconds
+     *
+     */
+    'resend_in'=>"60",
+
+    /**
+     * [Description for duplicate]
+     *
+     * Send previously generated for resend till expire or validate
+     * In boolean
+     * Duplicate till expired
+     *
+     */
+    'duplicate'=>false,
+
 
     /**
      * [Description for case]
@@ -390,8 +422,36 @@ echo $otp;
 array:2 [▼
   "expired" => true
   "otp" => "282561" //New otp
+  "remaining" => "00 00:01:49" //Remaining time of expiration
 ]
 ```
+<br/>
+
+### Static Function : <span id="verify">Verify</span>
+```php
+//Facade accessor public function
+public function verify($key,$otp)
+{
+     //processing...
+}
+```
+
+This verify function will verify otp with generated otp and expired the otp from system.
+
+<br/>
+
+#### Example
+
+```php
+<?php
+
+$result=OTP::verify('usertoken','12345678');
+echo $result;
+
+
+"true"
+```
+
 <br/>
 
 ### Static Function : <span id="uses_readonly">Readonly</span>
@@ -406,6 +466,8 @@ public function readonly($options=nullable)
 This will return  a random  generated string for other uses.
 
 <br/>
+
+
 
 * `$options`: It takes a array as parameter to replace [Configuration](#config) file parameters.
 
