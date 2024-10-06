@@ -122,12 +122,6 @@ class OtpAction{
      */
     protected $duplicate=false;
 
-    /**
-     * duplicateTill
-     *
-     * @var string
-     */
-    protected $duplicateTill="60";
 
     /**
      * __construct
@@ -159,7 +153,6 @@ class OtpAction{
 
         $this->duplicate=config('otp.duplicate');
 
-        $this->duplicateTill=config('otp.duplicate_till');
 
         return $this;
     }
@@ -346,9 +339,9 @@ class OtpAction{
 
         if($this->duplicate){
             $value=$this->extract($value);
-            $resend_time = new DateTime($value[2]);
+            $expire_time = new DateTime($value[1]);
             $current_date = new DateTime();
-            return $resend_time<$current_date;
+            return $expire_time>$current_date;
         }
     }
 

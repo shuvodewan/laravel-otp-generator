@@ -111,19 +111,11 @@ return
      *
      * Send previously generated for resend till expire or validate
      * In boolean
+     * Duplicate till expired
      *
      */
     'duplicate'=>false,
 
-    /**
-     * [Description for duplicate_till]
-     *
-     * Duplicate resend otp till
-     * Should be smaller then expire time
-     * In seconds
-     *
-     */
-    'duplicate_till'=>'60',
 
 
     /**
